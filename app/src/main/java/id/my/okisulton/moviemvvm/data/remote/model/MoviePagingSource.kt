@@ -24,7 +24,7 @@ class MoviePagingSource(
             val position: Int = params.key ?: STARTING_PAGING_INDEX
             parameters["page"] = position.toString()
 //            val response = apiEndpoint.getNowPlayingMovies(parameters)
-            val response = apiEndpoint.getNowPlayingMovies(position)
+            val response = apiEndpoint.getNowPlayingMovies(parameters)
             val movies = response.results
 
             LoadResult.Page(

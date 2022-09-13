@@ -18,8 +18,8 @@ interface ApiEndpoint {
 
     @GET("movie/now_playing?api_key=$API_KEY")
     suspend fun getNowPlayingMovies (
-        @Query("page") position: Int
-//        @QueryMap parameter: HashMap<String, String>
+//        @Query("page") position: Int
+        @QueryMap parameter: HashMap<String, String>
     ): MovieResponse
 
 }
