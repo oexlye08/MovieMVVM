@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.internal.managers.ApplicationComponentManager
+import dagger.hilt.components.SingletonComponent
 import id.my.okisulton.moviemvvm.data.remote.retrofit.ApiEndpoint
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -16,7 +18,7 @@ import javax.inject.Singleton
  * Created by Oki Sulton on 12/09/2022.
  */
 @Module
-@InstallIn(Application::class)
+@InstallIn(SingletonComponent::class)
 object AppModule {
 
     private val base_url = "https://api.themoviedb.org/3/"

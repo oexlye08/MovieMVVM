@@ -11,7 +11,7 @@ data class MovieResponse(
 	val totalPages: String? = null,
 
 	@field:SerializedName("results")
-	val results: List<ResultsItem?>? = null
+	val results: List<ResultsItem>
 ) : Parcelable {
 
 	@Parcelize
