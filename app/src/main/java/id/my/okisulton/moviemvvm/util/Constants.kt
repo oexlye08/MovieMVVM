@@ -8,6 +8,9 @@ import id.my.okisulton.moviemvvm.data.remote.model.MovieResponse
  */
 object Constants {
     const val STARTING_PAGING_INDEX = 1
+    const val CURRENT_QUERY = "current_query"
+    const val EMPTY_QUERY = ""
+
     val COMPARATOR = object : DiffUtil.ItemCallback<MovieResponse.ResultsItem>() {
         override fun areItemsTheSame(
             oldItem: MovieResponse.ResultsItem,

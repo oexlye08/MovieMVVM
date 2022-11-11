@@ -8,12 +8,24 @@
     <fragment
         android:id="@+id/movieFragment"
         android:name="id.my.okisulton.moviemvvm.ui.movie.MovieFragment"
-        android:label="fragment_movie"
+        android:label="Movie"
         tools:layout="@layout/fragment_movie" >
+        <action
+            android:id="@+id/action_movieFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/favoriteFragment"
         android:name="id.my.okisulton.moviemvvm.ui.favorite.FavoriteFragment"
-        android:label="fragment_favorite"
+        android:label="Favorite"
         tools:layout="@layout/fragment_favorite" />
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="id.my.okisulton.moviemvvm.ui.details.DetailsFragment"
+        android:label="Details"
+        tools:layout="@layout/fragment_details" >
+        <argument
+            android:name="movie"
+            app:argType="id.my.okisulton.moviemvvm.data.remote.model.MovieResponse$ResultsItem" />
+    </fragment>
 </navigation>

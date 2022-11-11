@@ -1,26 +1,21 @@
 package id.my.okisulton.moviemvvm
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import dagger.hilt.android.AndroidEntryPoint
 import id.my.okisulton.moviemvvm.databinding.ActivityMainBinding
 
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private var _binding : ActivityMainBinding? = null
+    private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var navController: NavController
@@ -31,14 +26,28 @@ class MainActivity : AppCompatActivity() {
 
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val toolbar = binding.materialToolbar
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
 
-        navController = findNavController(R.id.fragmentDashboard)
-        setupActionBarWithNavController(navController)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
+        navController = navHostFragment.findNavController()
 
+        val appBarConfiguration = AppBarConfiguration.Builder(
+            R.id.movieFragment, R.id.favoriteFragment
+        ).build()
+        setupActionBarWithNavController(navController, appBarConfiguration)
         binding.apply {
             bottomNavigationView.setupWithNavController(navController)
         }
+
+//        navController = findNavController(R.id.nav_host_fragment_container)
+//        setupActionBarWithNavController(navController)
+
+//        binding.apply {
+//            bottomNavigationView.setupWithNavController(navController)
+//        }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }

@@ -1,11 +1,9 @@
 package id.my.okisulton.moviemvvm.di
 
-import android.app.Application
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.internal.managers.ApplicationComponentManager
 import dagger.hilt.components.SingletonComponent
 import id.my.okisulton.moviemvvm.data.remote.retrofit.ApiEndpoint
 import okhttp3.OkHttpClient
@@ -36,7 +34,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit() : Retrofit =
+    fun provideRetrofit(): Retrofit =
         Retrofit.Builder()
             .baseUrl(base_url)
             .client(client)

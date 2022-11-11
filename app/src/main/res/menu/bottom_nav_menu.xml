@@ -5,12 +5,10 @@
         android:id="@+id/movieFragment"
         android:enabled="true"
         android:title="@string/movie"
-        android:icon="@drawable/icon_selection_movie"
-        />
+        android:icon="@drawable/icon_selection_movie" />
     <item
         android:id="@+id/favoriteFragment"
         android:enabled="true"
         android:title="@string/favorite"
-        android:icon="@drawable/icon_selection_favorite"
-        />
+        android:icon="@drawable/icon_selection_favorite" />
 </menu>

@@ -14,26 +14,42 @@ import id.my.okisulton.moviemvvm.util.Constants.COMPARATOR
 /**
  * Created by Oki Sulton on 13/09/2022.
  */
-class MovieAdapter: PagingDataAdapter<MovieResponse.ResultsItem, MovieAdapter.MovieViewHolder>(COMPARATOR) {
+class MovieAdapter (private val listener: OnItemClickListener) : PagingDataAdapter<
+        MovieResponse.ResultsItem,
+        MovieAdapter.MovieViewHolder
+        >(COMPARATOR) {
 
-    inner class MovieViewHolder(private val binding: ItemMovieBinding)
-        : RecyclerView.ViewHolder(binding.root) {
-            fun bind(movie: MovieResponse.ResultsItem) {
-                with(binding) {
-                    Glide.with(itemView)
-                        .load("${movie.baseUrl}${movie.posterPath}")
-                        .centerCrop()
-                        .transition(DrawableTransitionOptions.withCrossFade())
-                        .error(R.drawable.ic_error)
-                        .into(moviePoster)
+    inner class MovieViewHolder(private val binding: ItemMovieBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-                    tvTitle.text = movie.originalTitle
+        init {
+            binding.root.setOnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val item = getItem(position)
+                    if (item != null) {
+                        listener.onItemClick(item)
+                    }
                 }
             }
         }
 
+        fun bind(movie: MovieResponse.ResultsItem) {
+            with(binding) {
+                Glide.with(itemView)
+                    .load("${movie.baseUrl}${movie.backdropPath}")
+                    .centerCrop()
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .error(R.drawable.ic_error)
+                    .into(moviePoster)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)= MovieViewHolder (
+                tvTitle.text = movie.originalTitle
+            }
+        }
+    }
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MovieViewHolder(
         ItemMovieBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
 
@@ -42,5 +58,9 @@ class MovieAdapter: PagingDataAdapter<MovieResponse.ResultsItem, MovieAdapter.Mo
         if (currentItem != null) {
             holder.bind(currentItem)
         }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(movie: MovieResponse.ResultsItem)
     }
 }
