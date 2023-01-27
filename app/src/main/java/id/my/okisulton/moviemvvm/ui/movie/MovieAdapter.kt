@@ -1,5 +1,6 @@
 package id.my.okisulton.moviemvvm.ui.movie
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -10,6 +11,7 @@ import id.my.okisulton.moviemvvm.R
 import id.my.okisulton.moviemvvm.data.remote.model.MovieResponse
 import id.my.okisulton.moviemvvm.databinding.ItemMovieBinding
 import id.my.okisulton.moviemvvm.util.Constants.COMPARATOR
+import id.my.okisulton.moviemvvm.util.Constants.IMAGE_URL
 
 /**
  * Created by Oki Sulton on 13/09/2022.
@@ -28,6 +30,7 @@ class MovieAdapter (private val listener: OnItemClickListener) : PagingDataAdapt
                 if (position != RecyclerView.NO_POSITION) {
                     val item = getItem(position)
                     if (item != null) {
+                        Log.d(TAG, "onClick: $item")
                         listener.onItemClick(item)
                     }
                 }
@@ -37,7 +40,7 @@ class MovieAdapter (private val listener: OnItemClickListener) : PagingDataAdapt
         fun bind(movie: MovieResponse.ResultsItem) {
             with(binding) {
                 Glide.with(itemView)
-                    .load("${movie.baseUrl}${movie.backdropPath}")
+                    .load("${IMAGE_URL}${movie.backdropPath}")
                     .centerCrop()
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .error(R.drawable.ic_error)
@@ -62,5 +65,9 @@ class MovieAdapter (private val listener: OnItemClickListener) : PagingDataAdapt
 
     interface OnItemClickListener {
         fun onItemClick(movie: MovieResponse.ResultsItem)
+    }
+
+    companion object {
+        private const val TAG = "MovieAdapter"
     }
 }

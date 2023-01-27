@@ -12,8 +12,10 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import id.my.okisulton.moviemvvm.R
+import id.my.okisulton.moviemvvm.data.remote.model.MovieMove
 import id.my.okisulton.moviemvvm.data.remote.model.MovieResponse
 import id.my.okisulton.moviemvvm.databinding.FragmentMovieBinding
+import id.my.okisulton.moviemvvm.util.Constants
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -24,7 +26,9 @@ class MovieFragment : Fragment(), MovieAdapter.OnItemClickListener {
     @Inject
     lateinit var movieFactory: MovieViewModel.MovieFactory
     private val viewModel: MovieViewModel by viewModels {
-        MovieViewModel.provideFactory(movieFactory, requireParentFragment(), arguments)
+        defaultViewModelProviderFactory
+        Constants.movieFactory(movieFactory, requireParentFragment(), arguments)
+//        MovieViewModel.provideFactory(movieFactory, requireParentFragment(), arguments)
     }
 
     private lateinit var movieAdapter: MovieAdapter
@@ -39,6 +43,7 @@ class MovieFragment : Fragment(), MovieAdapter.OnItemClickListener {
 
     }
 
+    @Suppress("DEPRECATION")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -46,11 +51,9 @@ class MovieFragment : Fragment(), MovieAdapter.OnItemClickListener {
 
         setupRvMovie(movieAdapter)
         viewModel.movies.observe(viewLifecycleOwner) { response ->
-            Log.d(TAG, "onViewCreated: ${response.toString()}")
+            Log.d(TAG, "onViewCreated: $response")
             movieAdapter.submitData(viewLifecycleOwner.lifecycle, response)
         }
-
-
 
         setHasOptionsMenu(true)
     }
@@ -62,8 +65,8 @@ class MovieFragment : Fragment(), MovieAdapter.OnItemClickListener {
             setHasFixedSize(true)
             adapter = movieAdapter
                 .withLoadStateHeaderAndFooter(
-                    header = MovieLoadStateAdapter {movieAdapter.retry()},
-                    footer = MovieLoadStateAdapter {movieAdapter.retry()}
+                    header = MovieLoadStateAdapter { movieAdapter.retry() },
+                    footer = MovieLoadStateAdapter { movieAdapter.retry() }
                 )
         }
         binding.buttonRetry.setOnClickListener { movieAdapter.retry() }
@@ -97,7 +100,7 @@ class MovieFragment : Fragment(), MovieAdapter.OnItemClickListener {
         val searchItem = menu.findItem(R.id.actionSearch)
         val searchView = searchItem.actionView as SearchView
 
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
                     binding.rvMovie.scrollToPosition(0)
@@ -115,6 +118,7 @@ class MovieFragment : Fragment(), MovieAdapter.OnItemClickListener {
     }
 
 
+    @Deprecated("Deprecated in Java", ReplaceWith("true"))
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return true
     }
@@ -123,14 +127,27 @@ class MovieFragment : Fragment(), MovieAdapter.OnItemClickListener {
         super.onDestroyView()
         _binding = null
     }
-    
+
+    override fun onItemClick(movie: MovieResponse.ResultsItem) {
+        Log.d(TAG, "onItemClick: $movie")
+        val movieMove = MovieMove(
+            backdropPath = movie.backdropPath,
+            overview = movie.overview,
+            originalTitle = movie.originalTitle,
+            id = movie.id,
+            title = movie.title,
+            posterPath = movie.posterPath
+        )
+        val action = MovieFragmentDirections.actionMovieFragmentToDetailsFragment(movieMove)
+        findNavController().navigate(action)
+
+//        val action = MovieFragmentDirections.actionMovieFragmentToDetailsFragment(movieMove = movie)
+//        findNavController().navigate(action)
+    }
+
     companion object {
         private const val TAG = "MovieFragment"
     }
 
-    override fun onItemClick(movie: MovieResponse.ResultsItem) {
-        val action = MovieFragmentDirections.actionMovieFragmentToDetailsFragment(movie)
-        findNavController().navigate(action)
-    }
-
 }
+

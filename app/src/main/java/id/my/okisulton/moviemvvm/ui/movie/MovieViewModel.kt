@@ -1,27 +1,25 @@
 package id.my.okisulton.moviemvvm.ui.movie
 
-import android.os.Bundle
-import androidx.lifecycle.*
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
+import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import androidx.savedstate.SavedStateRegistryOwner
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
 import id.my.okisulton.moviemvvm.data.remote.repository.MovieRepository
 import id.my.okisulton.moviemvvm.util.Constants.CURRENT_QUERY
 import id.my.okisulton.moviemvvm.util.Constants.EMPTY_QUERY
-import javax.inject.Inject
 
 /**
  * Created by Oki Sulton on 12/09/2022.
  */
 //@HiltViewModel
 //class MovieViewModel @Inject constructor(
-
+//@HiltViewModel
 class MovieViewModel @AssistedInject constructor(
-    private val repository: MovieRepository
-    ,
+    private val repository: MovieRepository,
     @Assisted handle: SavedStateHandle
 ) : ViewModel() {
 
@@ -30,23 +28,8 @@ class MovieViewModel @AssistedInject constructor(
         fun crate(handle: SavedStateHandle) : MovieViewModel
     }
 
-    companion object {
-        fun provideFactory(
-            assistedFactory: MovieFactory,
-            owner: SavedStateRegistryOwner,
-            defaultArgs: Bundle? = null,
-        ): AbstractSavedStateViewModelFactory = object : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(
-                key: String,
-                modelClass: Class<T>,
-                handle: SavedStateHandle
-            ): T {
-                return assistedFactory.crate(handle) as T
-            }
 
-        }
-    }
+
 
     private val currentQuery = handle.getLiveData(CURRENT_QUERY, EMPTY_QUERY)
 
@@ -54,7 +37,7 @@ class MovieViewModel @AssistedInject constructor(
 
     val movies = currentQuery.switchMap { query ->
         if (query.isNotEmpty()) {
-            repository.getSearchMovie(query)
+            repository.getSearchMovie(query).cachedIn(viewModelScope)
         } else {
             repository.getNowPlayingMovies().cachedIn(viewModelScope)
         }

@@ -34,9 +34,6 @@ data class MovieResponse(
 
         @field:SerializedName("poster_path")
         val posterPath: String? = null
-    ) : Parcelable {
-
-        val baseUrl get() = "https://image.tmdb.org/t/p/w500"
-    }
+    ) : Parcelable
 }
 
